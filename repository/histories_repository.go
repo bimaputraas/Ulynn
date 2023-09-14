@@ -14,18 +14,10 @@ func (r Histories) UpdateCreate(videoGameId int,user model.Users) (*model.ResBod
 	var videoGame model.VideoGames
 	result := tx.First(&videoGame,videoGameId)
 	if result.Error != nil{
-		tx.Rollback()
 		return nil,result.Error
 	}
 	if !videoGame.Availability{
-		tx.Rollback()
 		return nil,errors.New("video game is not ready")
-	}
-
-	// check user deposit amount
-	if user.DepositAmount < videoGame.RentalCost{
-		tx.Rollback()
-		return nil,errors.New("insufficient funds")
 	}
 
 	// update video game avalability
@@ -34,6 +26,12 @@ func (r Histories) UpdateCreate(videoGameId int,user model.Users) (*model.ResBod
 	if result.Error != nil{
 		tx.Rollback()
 		return nil,result.Error
+	}
+
+	// check user deposit amount
+	if user.DepositAmount < videoGame.RentalCost{
+		tx.Rollback()
+		return nil,errors.New("insufficient funds")
 	}
 
 	// update user deposit amount
@@ -49,10 +47,10 @@ func (r Histories) UpdateCreate(videoGameId int,user model.Users) (*model.ResBod
 		UserID: user.ID,
 		VideoGameID: videoGame.ID,
 		StartDate: time.Now(),
-		DueDate: time.Now().AddDate(0,0,3),
+		DueDate: time.Now().AddDate(0,1,0),
 		Status: "In-Progress",
 	}
-	result = tx.Save(&history)
+	result = tx.Create(&history)
 	if result.Error != nil{
 		tx.Rollback()
 		return nil,result.Error
@@ -74,48 +72,56 @@ func (r Histories) UpdateCreate(videoGameId int,user model.Users) (*model.ResBod
 	return &output,nil
 }
 
-func (r Histories) Update(historyId,userId int,reqStatus string) (*model.Histories,error){
+func (r Histories) Update(historyId,userId int) (*model.Histories,error){
+	tx := r.DB.Begin()
+
 	// find history
 	var history model.Histories
-	result := r.DB.Where("user_id = ?",userId).First(&history,historyId)
+	result := tx.Where("user_id = ?",userId).First(&history,historyId)
 	if result.Error != nil {
 		return nil,result.Error
 	}
 
-	if history.Status == "done" || history.Status == "DONE"{
+	if history.Status == "done" || history.Status == "DONE" || history.Status == "Done"{
 		return nil, errors.New("failed update, video game is already available")
 	}
 
 	// update history
-	history.Status = reqStatus
+	history.Status = "Done"
 	history.DueDate = time.Now()
 
-	result = r.DB.Save(&history)
+	result = tx.Save(&history)
 	if result.Error != nil {
+		tx.Rollback()
 		return nil,result.Error
 	}
 
 	// find video game
 	var videoGame model.VideoGames
-	result = r.DB.First(&videoGame,history.VideoGameID)
+	result = tx.First(&videoGame,history.VideoGameID)
 	if result.Error != nil {
+		tx.Rollback()
 		return nil,result.Error
 	}
 
 	// update video game
 	videoGame.Availability = true
-	result = r.DB.Save(&videoGame)
+	result = tx.Save(&videoGame)
 	if result.Error != nil {
+		tx.Rollback()
 		return nil,result.Error
 	}
 
 	// updated history
 	var updatedHistory model.Histories
-	result = r.DB.Where("user_id = ?",userId).Preload("VideoGame").First(&updatedHistory,historyId)
+	result = tx.Where("user_id = ?",userId).Preload("VideoGame").First(&updatedHistory,historyId)
 	if result.Error != nil {
+		tx.Rollback()
 		return nil,result.Error
 	}
 
+	// commit tx
+	tx.Commit()
 	return &updatedHistory,nil
 }
 
@@ -123,6 +129,21 @@ func (r Histories) Update(historyId,userId int,reqStatus string) (*model.Histori
 func (r Histories) FindAll(userId int) (*[]model.Histories,error){
 	var histories []model.Histories
 	result := r.DB.Where("user_id = ?",userId).Preload("VideoGame").Find(&histories)
+	if result.Error != nil {
+		return nil,result.Error
+	}
+
+	return &histories,nil
+}
+
+// find all with status
+func (r Histories) FindAllWithStatus(userId int,ok bool) (*[]model.Histories,error){
+	status := "Done"
+	if !ok {
+		status = "In-Progress"
+	}
+	var histories []model.Histories
+	result := r.DB.Where("status = ? AND user_id = ?",status,userId).Preload("VideoGame").Find(&histories)
 	if result.Error != nil {
 		return nil,result.Error
 	}
@@ -139,4 +160,13 @@ func (r Histories) FindById(historyId,userId int) (*model.Histories,error){
 	}
 
 	return &history,nil
+}
+
+func (r Histories) Delete(histories model.Histories) (*model.Histories,error){
+	result := r.DB.Delete(&histories)
+	if result.Error != nil {
+		return nil,result.Error
+	}
+
+	return &histories,nil
 }

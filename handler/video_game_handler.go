@@ -7,6 +7,17 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+// ViewAll godoc
+// @Summary View all video games
+// @Description View all video games with optional availability filter
+// @Tags VideoGame
+// @Accept json
+// @Produce json
+// @Param availability query string false "Filter by availability (true or false)"
+// @Success 200 {object} helper.Response
+// @Failure 400 {object} helper.ErrResponse
+// @Failure 401 {object} helper.ErrResponse
+// @Router /video_games [get]
 func (h VideoGame) ViewAll(c echo.Context) error {
 	// with query param
 	isTrueStr := c.QueryParam("availability")
@@ -45,6 +56,17 @@ func (h VideoGame) ViewAll(c echo.Context) error {
 	return nil
 }
 
+// ViewById godoc
+// @Summary View a video game by ID
+// @Description View a video game by its unique ID
+// @Tags VideoGame
+// @Accept json
+// @Produce json
+// @Param id path string true "Video Game ID"
+// @Success 200 {object} helper.Response
+// @Failure 400 {object} helper.ErrResponse
+// @Failure 401 {object} helper.ErrResponse
+// @Router /video_games/{id} [get]
 func (h VideoGame) ViewById(c echo.Context) error {
 	// get id from path param
 	idStr := c.Param("id")

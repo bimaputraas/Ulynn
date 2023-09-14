@@ -1,0 +1,397 @@
+definitions:
+  helper.ErrResponse:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
+  helper.Response:
+    properties:
+      data: {}
+      message:
+        type: string
+    type: object
+  model.ReqBodyUserLogin:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  model.ReqBodyUserRegister:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  model.ReqBodyUserTopUp:
+    properties:
+      top_up_amount:
+        type: number
+    required:
+    - top_up_amount
+    type: object
+  model.ReqBodyVideoGameRent:
+    properties:
+      video_game_id:
+        type: number
+    required:
+    - video_game_id
+    type: object
+host: http://localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+  description: Documentation Video Game Rent API using Swaggo/echo-swagger.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Documentation Video Game Rent API
+  version: "1.0"
+paths:
+  /histories:
+    get:
+      consumes:
+      - application/json
+      description: View all rental histories for the logged-in user
+      parameters:
+      - description: Authorization header with token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/helper.Response'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/helper.ErrResponse'
+      summary: View all rental histories
+      tags:
+      - Histories
+  /histories/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Delete a rental history by its unique ID
+      parameters:
+      - description: Authorization header with token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Rental History ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/helper.ErrResponse'
+      summary: Delete a rental history by ID
+      tags:
+      - Histories
+  /histories/rent:
+    post:
+      consumes:
+      - application/json
+      description: Add a new rental with the provided information
+      parameters:
+      - description: Authorization header with token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Rental details
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/model.ReqBodyVideoGameRent'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/helper.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/helper.ErrResponse'
+      summary: Add a new rental
+      tags:
+      - Histories
+  /histories/rent/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Update the status of a rental by ID
+      parameters:
+      - description: Authorization header with token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Rental ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/helper.ErrResponse'
+      summary: Update a rental status
+      tags:
+      - Histories
+  /users/info:
+    get:
+      consumes:
+      - application/json
+      description: Get information about the currently logged-in user
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.Response'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/helper.ErrResponse'
+      summary: Get logged-in user information
+      tags:
+      - User
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      description: Log in a user with the provided email and password
+      parameters:
+      - description: User login details
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/model.ReqBodyUserLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.Response'
+      summary: User login
+      tags:
+      - User
+  /users/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user with the provided information
+      parameters:
+      - description: User registration details
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/model.ReqBodyUserRegister'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/helper.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/helper.ErrResponse'
+      summary: Register a new user
+      tags:
+      - User
+  /users/topup:
+    put:
+      consumes:
+      - application/json
+      description: Top up the deposit of the logged-in user
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Top-up details
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/model.ReqBodyUserTopUp'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ErrResponse'
+      summary: Top up user's deposit
+      tags:
+      - User
+  /users/verify/{userId}/{code}:
+    get:
+      consumes:
+      - application/json
+      description: Verify user's account by providing a verification code
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: string
+      - description: Verification code
+        in: path
+        name: code
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ErrResponse'
+      summary: Verify user's account
+      tags:
+      - User
+  /video_games:
+    get:
+      consumes:
+      - application/json
+      description: View all video games with optional availability filter
+      parameters:
+      - description: Filter by availability (true or false)
+        in: query
+        name: availability
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/helper.ErrResponse'
+      summary: View all video games
+      tags:
+      - VideoGame
+  /video_games/{id}:
+    get:
+      consumes:
+      - application/json
+      description: View a video game by its unique ID
+      parameters:
+      - description: Video Game ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/helper.ErrResponse'
+      summary: View a video game by ID
+      tags:
+      - VideoGame
+swagger: "2.0"

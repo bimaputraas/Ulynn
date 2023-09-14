@@ -7,6 +7,11 @@ type Response struct {
 	Data    interface{}
 }
 
+type ErrResponse struct {
+	Message string
+	Code    int
+}
+
 func WriteResponse(c echo.Context,code int,msg string){
 	c.JSON(code,Response{
 		Message: msg,
@@ -22,9 +27,9 @@ func WriteResponseWithData(c echo.Context,code int,msg string,data interface{}){
 }
 
 func ErrorResponse(code int,msg string) *echo.HTTPError{
-	err := echo.NewHTTPError(code,Response{
+	err := echo.NewHTTPError(code,ErrResponse{
 		Message: msg,
-		Data: "-",
+		Code: code,
 	})
 
 	return err

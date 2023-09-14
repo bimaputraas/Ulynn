@@ -84,3 +84,4 @@ func (r User) UpdateDepositAmount(reqAmount float64,user model.Users) (*model.Us
 	return &user,nil
 }
 
+

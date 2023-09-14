@@ -30,6 +30,3 @@ type ResBodyHistoryVideoGame struct {
 	Status string `json:"status"`
 }
 
-type ReqBodyHistoryUpdate struct {
-	Status	string `json:"status" validate:"required"`
-}

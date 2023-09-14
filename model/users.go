@@ -12,7 +12,6 @@ type Users struct {
 
 type UserVerifications struct {
 	ID         int
-	UserID     int `json:"user_id"`
-	User       Users
+	UserID     int    `json:"user_id"`
 	VerifyCode string `json:"verify_code"`
 }

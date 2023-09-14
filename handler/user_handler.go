@@ -8,6 +8,17 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+// Register godoc
+// @Summary Register a new user
+// @Description Register a new user with the provided information
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param user body model.ReqBodyUserRegister true "User registration details"
+// @Success 201 {object} helper.Response
+// @Failure 400 {object} helper.ErrResponse
+// @Failure 500 {object} helper.ErrResponse
+// @Router /users/register [post]
 func (h User) Register(c echo.Context) error {
 	// bind
 	var reqBody model.ReqBodyUserRegister
@@ -53,6 +64,17 @@ func (h User) Register(c echo.Context) error {
 	return nil
 }
 
+// StatusVerification godoc
+// @Summary Verify user's account
+// @Description Verify user's account by providing a verification code
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param userId path string true "User ID"
+// @Param code path string true "Verification code"
+// @Success 200 {object} helper.Response
+// @Failure 400 {object} helper.ErrResponse
+// @Router /users/verify/{userId}/{code} [get]
 func (h User) StatusVerification(c echo.Context) error {
 	// param path
 	idStr := c.Param("userId")
@@ -76,7 +98,7 @@ func (h User) StatusVerification(c echo.Context) error {
 			return helper.ErrorResponse(400, err.Error())
 		}
 
-		// update status
+		// update status user
 		updatedUser, err := h.Repository.UpdateStatusActivated(*user)
 		if err != nil {
 			return helper.ErrorResponse(400, err.Error())
@@ -90,6 +112,16 @@ func (h User) StatusVerification(c echo.Context) error {
 	return helper.ErrorResponse(400, "failed verification")
 }
 
+// Login godoc
+// @Summary User login
+// @Description Log in a user with the provided email and password
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param user body model.ReqBodyUserLogin true "User login details"
+// @Success 200 {object} helper.Response
+// @Failure 400 {object} helper.Response
+// @Router /users/login [post]
 func (h User) Login(c echo.Context) error {
 	// bind
 	var reqBody model.ReqBodyUserLogin
@@ -118,6 +150,16 @@ func (h User) Login(c echo.Context) error {
 	return nil
 }
 
+// GetInfo godoc
+// @Summary Get logged-in user information
+// @Description Get information about the currently logged-in user
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "Authorization"
+// @Success 200 {object} helper.Response
+// @Failure 403 {object} helper.ErrResponse
+// @Router /users/info [get]
 func (h User) GetInfo(c echo.Context) error {
 	// get logged in user
 	user := c.Get("user").(*model.Users)
@@ -127,6 +169,17 @@ func (h User) GetInfo(c echo.Context) error {
 	return nil
 }
 
+// TopUp godoc
+// @Summary Top up user's deposit
+// @Description Top up the deposit of the logged-in user
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "Authorization"
+// @Param user body model.ReqBodyUserTopUp true "Top-up details"
+// @Success 200 {object} helper.Response
+// @Failure 400 {object} helper.ErrResponse
+// @Router /users/topup [put]
 func (h User) TopUp(c echo.Context) error {
 	// bind
 	var reqBody model.ReqBodyUserTopUp

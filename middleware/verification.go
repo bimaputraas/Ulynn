@@ -38,7 +38,7 @@ func(h Verification) AuthorizeUserStatus(next echo.HandlerFunc) echo.HandlerFunc
 		}
 
 		// success
-		helper.WriteResponseWithData(c,201,"Success login",loggedUser)
+		helper.WriteResponseWithData(c,200,"Success login",loggedUser)
 		return nil
 	}
 }
