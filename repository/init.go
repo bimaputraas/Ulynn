@@ -11,10 +11,10 @@ type VideoGame struct {
 	DB *gorm.DB
 }
 
-type History struct {
+type Histories struct {
 	DB *gorm.DB
 }
 
-type Rent struct {
+type Verification struct {
 	DB *gorm.DB
 }

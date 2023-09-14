@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"strconv"
 	"videogames_rent_api/helper"
 	"videogames_rent_api/model"
 
@@ -34,15 +35,59 @@ func (h User) Register(c echo.Context) error {
 		return helper.ErrorResponse(400, err.Error())
 	}
 
-	// send notif by email
-	err = helper.SendMail(user.Email)
+	// set verification code
+	codeString := helper.GenerateCode()
+	err = h.Repository.CreateVerificationCode(user.ID,codeString)
+	if err != nil {
+		return helper.ErrorResponse(500, err.Error())
+	}
+
+	// send notif and code verification by email 
+	err = helper.SendMail(user.Email,user.ID,codeString)
 	if err != nil {
 		return helper.ErrorResponse(500, err.Error())
 	}
 
 	// success
-	helper.WriteResponseWithData(c,201,"Registration successful! A notification has been successfully sent to the email address "+user.Email,user)
+	helper.WriteResponseWithData(c,201,"Registration successful! Your verify link has been sent to your email",user)
 	return nil
+}
+
+func (h User) StatusVerification(c echo.Context) error {
+	// param path
+	idStr := c.Param("userId")
+	codeStr := c.Param("code")
+	id,err := strconv.Atoi(idStr)
+	if err != nil {
+		return helper.ErrorResponse(400, "failed verification")
+	}
+
+	// get user verification code
+	userVerif,err := h.Repository.FindUserVerificationByUserId(id)
+	if err != nil {
+		return helper.ErrorResponse(400, err.Error())
+	}
+
+	// if match
+	if userVerif.VerifyCode == codeStr {
+		// get user code from db
+		user,err := h.Repository.FindById(id)
+		if err != nil {
+			return helper.ErrorResponse(400, err.Error())
+		}
+
+		// update status
+		updatedUser, err := h.Repository.UpdateStatusActivated(*user)
+		if err != nil {
+			return helper.ErrorResponse(400, err.Error())
+		}
+
+		// success
+		helper.WriteResponseWithData(c,200,"Your account has been successfully verified. You can now access our services.",updatedUser)
+		return nil
+	}
+
+	return helper.ErrorResponse(400, "failed verification")
 }
 
 func (h User) Login(c echo.Context) error {
@@ -69,21 +114,7 @@ func (h User) Login(c echo.Context) error {
 	if !helper.CheckPasswordHash(reqBody.Password,user.Password){
 		return helper.ErrorResponse(400, "Wrong email or password")
 	}
-
-	// generate token
-	tokenString,err := helper.GenerateToken(user.ID)
-	if err != nil {
-		return helper.ErrorResponse(400, err.Error())
-	}
-	
-	// update user jwt token
-	user,err = h.Repository.UpdateJwtToken(tokenString,*user)
-	if err != nil {
-		return helper.ErrorResponse(400, err.Error())
-	}
-
-	// success
-	helper.WriteResponseWithData(c,201,"Success login",user)
+	c.Set("user",user)
 	return nil
 }
 

@@ -13,9 +13,7 @@ func InitEchoInstance(db *gorm.DB) *echo.Echo{
 	e := echo.New()
 	
 	// auth
-	authMiddleware := middleware.Auth{
-		DB:db,
-	}
+	authMiddleware := middleware.InitVerification(db)
 	
 	// user router
 	userHandler := handler.InitUserHandler(db)
@@ -23,34 +21,28 @@ func InitEchoInstance(db *gorm.DB) *echo.Echo{
 	{
 		// POST http://localhost:8080/users/register - user register
 		user.POST("/register", userHandler.Register)
+		// PUT http://localhost:8080/users/statusverification/:userId/:code - user verification
+		user.GET("/statusverification/:userId/:code", userHandler.StatusVerification)
 		// POST http://localhost:8080/users/login - user login
-		user.POST("/login", userHandler.Login)
+		user.POST("/login", userHandler.Login,authMiddleware.AuthorizeUserStatus)
 		// POST http://localhost:8080/users/login - user login
 		user.GET("", userHandler.GetInfo,authMiddleware.Authentication)
 		// PUT http://localhost:8080/users/login - user top-up deposit amount
 		user.PUT("/top_up",userHandler.TopUp,authMiddleware.Authentication)
 		
 
-		// User histories router
-		historiesHandler := handler.InitHistoryHandler(db)
-		history := user.Group("/histories",authMiddleware.Authentication)
-		{
-			// GET http://localhost:8080/users/histories - view all video games
-			history.GET("",historiesHandler.ViewAll)
-			// GET http://localhost:8080/users/histories/:id - view all video games
-			history.GET("/:id",historiesHandler.ViewById)
-			
-
-		}
-
-		// User rent
-		rentHandler := handler.InitRentHandler(db)
-		rent := user.Group("/rent",authMiddleware.Authentication)
+		// User histories
+		historiesHandler := handler.InitHistoriesHandler(db)
+		histories := user.Group("/rent",authMiddleware.Authentication)
 		{
 			// GET http://localhost:8080/users/histories/:id - user update rent
-			rent.POST("",rentHandler.AddRent)
+			histories.POST("",historiesHandler.AddRent)
 			// PUT http://localhost:8080/users/login - user create rent
-			rent.PUT("/:id",rentHandler.UpdateRent)
+			histories.PUT("/:id",historiesHandler.UpdateRent)
+			// GET http://localhost:8080/users/histories - view all video games
+			histories.GET("/histories",historiesHandler.ViewAll)
+			// GET http://localhost:8080/users/histories/:id - view all video games
+			histories.GET("/histories/:id",historiesHandler.ViewById)
 		}
 
 	}

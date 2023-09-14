@@ -15,12 +15,8 @@ type VideoGame struct {
 	Repository repository.VideoGame
 }
 
-type History struct {
-	Repository repository.History
-}
-
-type Rent struct {
-	Repository repository.Rent
+type Histories struct {
+	Repository repository.Histories
 }
 
 // init handler
@@ -36,14 +32,8 @@ func InitVideoGameHandler(db *gorm.DB) *VideoGame{
 	} }
 }
 
-func InitHistoryHandler(db *gorm.DB) *History{
-	return &History{Repository : repository.History{
-		DB : db,
-	}}
-}
-
-func InitRentHandler(db *gorm.DB) *Rent{
-	return &Rent{Repository : repository.Rent{
+func InitHistoriesHandler(db *gorm.DB) *Histories{
+	return &Histories{Repository : repository.Histories{
 		DB : db,
 	}}
 }
