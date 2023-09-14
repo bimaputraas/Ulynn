@@ -120,7 +120,7 @@ func (h User) Login(c echo.Context) error {
 
 func (h User) GetInfo(c echo.Context) error {
 	// get logged in user
-	user := c.Get("user").(model.Users)
+	user := c.Get("user").(*model.Users)
 
 	// success
 	helper.WriteResponseWithData(c,200,"Success get logged in user information",user)
@@ -142,10 +142,10 @@ func (h User) TopUp(c echo.Context) error {
 	}
 
 	// get logged in user
-	user := c.Get("user").(model.Users)
+	user := c.Get("user").(*model.Users)
 
 	// update
-	updatedUser,err := h.Repository.UpdateDepositAmount(reqBody.TopUpAmount,user)
+	updatedUser,err := h.Repository.UpdateDepositAmount(reqBody.TopUpAmount,*user)
 	if err != nil {
 		return helper.ErrorResponse(400, err.Error())
 	}

@@ -23,10 +23,10 @@ func (h Histories) AddRent(c echo.Context) error {
 	}
 
 	// get logged in user
-	user := c.Get("user").(model.Users)
+	user := c.Get("user").(*model.Users)
 
 	// update user,video_game, and create a new history
-	resBody, err := h.Repository.UpdateCreate(int(reqBody.VideoGamesID), user)
+	resBody, err := h.Repository.UpdateCreate(int(reqBody.VideoGamesID), *user)
 	if err != nil {
 		return helper.ErrorResponse(400, err.Error())
 	}
@@ -38,7 +38,7 @@ func (h Histories) AddRent(c echo.Context) error {
 
 func (h Histories) UpdateRent(c echo.Context) error {
 	// get logged in user
-	user := c.Get("user").(model.Users)
+	user := c.Get("user").(*model.Users)
 
 	// bind
 	var reqBody model.ReqBodyHistoryUpdate
@@ -77,7 +77,7 @@ func (h Histories) UpdateRent(c echo.Context) error {
 
 func (h Histories) ViewAll(c echo.Context) error {
 	// get logged in user
-	user := c.Get("user").(model.Users)
+	user := c.Get("user").(*model.Users)
 
 	// view all
 	histories,err := h.Repository.FindAll(user.ID)
@@ -92,7 +92,7 @@ func (h Histories) ViewAll(c echo.Context) error {
 
 func (h Histories) ViewById(c echo.Context) error {
 	// get logged in user
-	user := c.Get("user").(model.Users)
+	user := c.Get("user").(*model.Users)
 
 	// get id from path param
 	idStr := c.Param("id")

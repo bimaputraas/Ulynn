@@ -11,14 +11,18 @@ import (
 func(h Verification) AuthorizeUserStatus(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		// handler login
-		next(c)
+		// next(c)
+		err := next(c)
+		if err != nil {
+			return err
+		}
 
 		// get user
-		user := c.Get("user").(model.Users)
+		user := c.Get("user").(*model.Users)
 
 		// if status pending verification
 		if user.Status != "Activated"{
-		return helper.ErrorResponse(403, "Your account is pending activation. Please check your email for activation instructions.")
+		return helper.ErrorResponse(403, "Your account activation is pending, please check your email for activate an account.")
 		}
 
 		// generate token
@@ -28,7 +32,7 @@ func(h Verification) AuthorizeUserStatus(next echo.HandlerFunc) echo.HandlerFunc
 		}
 
 		// update user jwt token
-		loggedUser,err := h.Repository.UpdateJwtToken(tokenString,user)
+		loggedUser,err := h.Repository.UpdateJwtToken(tokenString,*user)
 		if err != nil {
 			return helper.ErrorResponse(400, err.Error())
 		}
