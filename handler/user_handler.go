@@ -140,12 +140,12 @@ func (h User) Login(c echo.Context) error {
 	// find user
 	user,err := h.Repository.FindByEmail(reqBody.Email)
 	if err != nil {
-		return helper.ErrorResponse(400, "Wrong email or password")
+		return helper.ErrorResponse(400, "wrong email or password")
 	}
 
 	// compare hash
 	if !helper.CheckPasswordHash(reqBody.Password,user.Password){
-		return helper.ErrorResponse(400, "Wrong email or password")
+		return helper.ErrorResponse(400, "wrong email or password")
 	}
 	c.Set("user",user)
 	return nil
