@@ -219,8 +219,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/helper.Response'
-        "403":
-          description: Forbidden
+        "401":
+          description: Unauthorized
           schema:
             $ref: '#/definitions/helper.ErrResponse'
       summary: Get logged-in user information
@@ -247,6 +247,10 @@ paths:
             $ref: '#/definitions/helper.Response'
         "400":
           description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.Response'
+        "403":
+          description: Forbidden
           schema:
             $ref: '#/definitions/helper.Response'
       summary: User login
@@ -308,6 +312,10 @@ paths:
             $ref: '#/definitions/helper.Response'
         "400":
           description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ErrResponse'
+        "401":
+          description: Unauthorized
           schema:
             $ref: '#/definitions/helper.ErrResponse'
       summary: Top up user's deposit

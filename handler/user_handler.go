@@ -121,6 +121,7 @@ func (h User) StatusVerification(c echo.Context) error {
 // @Param user body model.ReqBodyUserLogin true "User login details"
 // @Success 200 {object} helper.Response
 // @Failure 400 {object} helper.Response
+// @Failure 403 {object} helper.Response
 // @Router /users/login [post]
 func (h User) Login(c echo.Context) error {
 	// bind
@@ -158,7 +159,7 @@ func (h User) Login(c echo.Context) error {
 // @Produce json
 // @Param Authorization header string true "Authorization"
 // @Success 200 {object} helper.Response
-// @Failure 403 {object} helper.ErrResponse
+// @Failure 401 {object} helper.ErrResponse
 // @Router /users/info [get]
 func (h User) GetInfo(c echo.Context) error {
 	// get logged in user
@@ -179,6 +180,7 @@ func (h User) GetInfo(c echo.Context) error {
 // @Param user body model.ReqBodyUserTopUp true "Top-up details"
 // @Success 200 {object} helper.Response
 // @Failure 400 {object} helper.ErrResponse
+// @Failure 401 {object} helper.ErrResponse
 // @Router /users/topup [put]
 func (h User) TopUp(c echo.Context) error {
 	// bind
