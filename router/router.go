@@ -38,18 +38,18 @@ func InitEchoInstance(db *gorm.DB) *echo.Echo{
 
 		// User histories
 		historiesHandler := handler.InitHistoriesHandler(db)
-		histories := user.Group("/rent",authMiddleware.Authentication)
+		histories := user.Group("/rent/histories",authMiddleware.Authentication)
 		{
-			// GET http://localhost:8080/users/histories/:id - user update rent
+			// GET http://localhost:8080/users/rent - user update rent
 			histories.POST("",historiesHandler.AddRent)
-			// PUT http://localhost:8080/users/login - user create rent
+			// PUT http://localhost:8080/users/rent/:id - user create rent
 			histories.PUT("/:id",historiesHandler.UpdateRent)
-			// GET http://localhost:8080/users/histories - view all video games
-			histories.GET("/histories",historiesHandler.ViewAll)
-			// GET http://localhost:8080/users/histories/:id - view all video games
-			histories.GET("/histories/:id",historiesHandler.ViewById)
-			// PUT http://localhost:8080/users/delete - delete user
-			histories.DELETE("/histories/:id",historiesHandler.Delete)
+			// GET http://localhost:8080/users/rent/histories - view all video games
+			histories.GET("",historiesHandler.ViewAll)
+			// GET http://localhost:8080/users/rent/histories/:id - view all video games
+			histories.GET("/:id",historiesHandler.ViewById)
+			// PUT http://localhost:8080/users/rent/delete - delete user
+			histories.DELETE("/:id",historiesHandler.Delete)
 		}
 
 	}

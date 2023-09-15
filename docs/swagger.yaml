@@ -63,144 +63,6 @@ info:
   title: Documentation Video Game Rent API
   version: "1.0"
 paths:
-  /histories:
-    get:
-      consumes:
-      - application/json
-      description: View all rental histories for the logged-in user
-      parameters:
-      - description: Authorization header with token
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: Filter by status (in-progress or done)
-        in: query
-        name: status
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/helper.Response'
-            type: array
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/helper.ErrResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/helper.ErrResponse'
-      summary: View all rental histories
-      tags:
-      - Histories
-  /histories/{id}:
-    get:
-      consumes:
-      - application/json
-      description: Delete a rental history by its unique ID
-      parameters:
-      - description: Authorization header with token
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: Rental History ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/helper.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/helper.ErrResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/helper.ErrResponse'
-      summary: Delete a rental history by ID
-      tags:
-      - Histories
-  /histories/rent:
-    post:
-      consumes:
-      - application/json
-      description: Add a new rental with the provided information
-      parameters:
-      - description: Authorization header with token
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: Rental details
-        in: body
-        name: user
-        required: true
-        schema:
-          $ref: '#/definitions/model.ReqBodyVideoGameRent'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/helper.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/helper.ErrResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/helper.ErrResponse'
-      summary: Add a new rental
-      tags:
-      - Histories
-  /histories/rent/{id}:
-    put:
-      consumes:
-      - application/json
-      description: Update the status of a rental by ID
-      parameters:
-      - description: Authorization header with token
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: Rental ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/helper.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/helper.ErrResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/helper.ErrResponse'
-      summary: Update a rental status
-      tags:
-      - Histories
   /users/info:
     get:
       consumes:
@@ -286,6 +148,175 @@ paths:
       summary: Register a new user
       tags:
       - User
+  /users/rent/histories:
+    get:
+      consumes:
+      - application/json
+      description: View all rental histories for the logged-in user
+      parameters:
+      - description: Authorization header with token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Filter by status (in-progress or done)
+        in: query
+        name: status
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/helper.Response'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/helper.ErrResponse'
+      summary: View all rental histories
+      tags:
+      - Histories
+    post:
+      consumes:
+      - application/json
+      description: Add a new rental with the provided information
+      parameters:
+      - description: Authorization header with token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Rental details
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/model.ReqBodyVideoGameRent'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/helper.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/helper.ErrResponse'
+      summary: Add a new rental
+      tags:
+      - Histories
+  /users/rent/histories/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a rental history by its unique ID
+      parameters:
+      - description: Authorization header with token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Rental History ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/helper.ErrResponse'
+      summary: Delete a rental history by ID
+      tags:
+      - Histories
+    get:
+      consumes:
+      - application/json
+      description: View a rental history by its unique ID
+      parameters:
+      - description: Authorization header with token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Rental History ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/helper.ErrResponse'
+      summary: View a rental history by ID
+      tags:
+      - Histories
+    put:
+      consumes:
+      - application/json
+      description: Update the status of a rental by ID
+      parameters:
+      - description: Authorization header with token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Rental ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/helper.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helper.ErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/helper.ErrResponse'
+      summary: Update a rental status
+      tags:
+      - Histories
   /users/topup:
     put:
       consumes:

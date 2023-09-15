@@ -16,214 +16,6 @@
     },
     "host": "http://localhost:8080",
     "paths": {
-        "/histories": {
-            "get": {
-                "description": "View all rental histories for the logged-in user",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Histories"
-                ],
-                "summary": "View all rental histories",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Authorization header with token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Filter by status (in-progress or done)",
-                        "name": "status",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/helper.Response"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/helper.ErrResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/helper.ErrResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/histories/rent": {
-            "post": {
-                "description": "Add a new rental with the provided information",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Histories"
-                ],
-                "summary": "Add a new rental",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Authorization header with token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "description": "Rental details",
-                        "name": "user",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.ReqBodyVideoGameRent"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/helper.Response"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/helper.ErrResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/helper.ErrResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/histories/rent/{id}": {
-            "put": {
-                "description": "Update the status of a rental by ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Histories"
-                ],
-                "summary": "Update a rental status",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Authorization header with token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Rental ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/helper.Response"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/helper.ErrResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/helper.ErrResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/histories/{id}": {
-            "get": {
-                "description": "Delete a rental history by its unique ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Histories"
-                ],
-                "summary": "Delete a rental history by ID",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Authorization header with token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Rental History ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/helper.Response"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/helper.ErrResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/helper.ErrResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/users/info": {
             "get": {
                 "description": "Get information about the currently logged-in user",
@@ -347,6 +139,259 @@
                     },
                     "500": {
                         "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/rent/histories": {
+            "get": {
+                "description": "View all rental histories for the logged-in user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Histories"
+                ],
+                "summary": "View all rental histories",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization header with token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by status (in-progress or done)",
+                        "name": "status",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/helper.Response"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ErrResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Add a new rental with the provided information",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Histories"
+                ],
+                "summary": "Add a new rental",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization header with token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Rental details",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.ReqBodyVideoGameRent"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/helper.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ErrResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/rent/histories/{id}": {
+            "get": {
+                "description": "View a rental history by its unique ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Histories"
+                ],
+                "summary": "View a rental history by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization header with token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Rental History ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/helper.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ErrResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update the status of a rental by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Histories"
+                ],
+                "summary": "Update a rental status",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization header with token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Rental ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/helper.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ErrResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a rental history by its unique ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Histories"
+                ],
+                "summary": "Delete a rental history by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization header with token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Rental History ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/helper.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/helper.ErrResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/helper.ErrResponse"
                         }

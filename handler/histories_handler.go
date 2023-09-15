@@ -19,7 +19,7 @@ import (
 // @Success 201 {object} helper.Response
 // @Failure 400 {object} helper.ErrResponse
 // @Failure 401 {object} helper.ErrResponse
-// @Router /histories/rent [post]
+// @Router /users/rent/histories [post]
 func (h Histories) AddRent(c echo.Context) error {
 	// bind
 	var reqBody model.ReqBodyVideoGameRent
@@ -58,7 +58,7 @@ func (h Histories) AddRent(c echo.Context) error {
 // @Success 200 {object} helper.Response
 // @Failure 400 {object} helper.ErrResponse
 // @Failure 401 {object} helper.ErrResponse
-// @Router /histories/rent/{id} [put]
+// @Router /users/rent/histories/{id} [put]
 func (h Histories) UpdateRent(c echo.Context) error {
 	// get logged in user
 	user := c.Get("user").(*model.Users)
@@ -91,7 +91,7 @@ func (h Histories) UpdateRent(c echo.Context) error {
 // @Success 200 {array} helper.Response
 // @Failure 400 {object} helper.ErrResponse
 // @Failure 401 {object} helper.ErrResponse
-// @Router /histories [get]
+// @Router /users/rent/histories [get]
 func (h Histories) ViewAll(c echo.Context) error {
 	// get logged in user
 	user := c.Get("user").(*model.Users)
@@ -145,7 +145,7 @@ func (h Histories) ViewAll(c echo.Context) error {
 // @Success 200 {object} helper.Response
 // @Failure 400 {object} helper.ErrResponse
 // @Failure 401 {object} helper.ErrResponse
-// @Router /histories/{id} [get]
+// @Router /users/rent/histories/{id} [get]
 func (h Histories) ViewById(c echo.Context) error {
 	// get logged in user
 	user := c.Get("user").(*model.Users)
@@ -178,7 +178,7 @@ func (h Histories) ViewById(c echo.Context) error {
 // @Success 200 {object} helper.Response
 // @Failure 400 {object} helper.ErrResponse
 // @Failure 401 {object} helper.ErrResponse
-// @Router /histories/{id} [get]
+// @Router /users/rent/histories/{id} [delete]
 func (h Histories) Delete(c echo.Context) error {
 	// get id from path param
 	idStr := c.Param("id")
