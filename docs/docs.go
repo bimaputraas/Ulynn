@@ -43,6 +43,12 @@ const docTemplate = `{
                         "name": "Authorization",
                         "in": "header",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by status (in-progress or done)",
+                        "name": "status",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -533,11 +539,11 @@ const docTemplate = `{
         "helper.ErrResponse": {
             "type": "object",
             "properties": {
-                "code": {
-                    "type": "integer"
-                },
                 "message": {
                     "type": "string"
+                },
+                "statusCode": {
+                    "type": "integer"
                 }
             }
         },
@@ -600,6 +606,9 @@ const docTemplate = `{
                 "video_game_id"
             ],
             "properties": {
+                "duration_month": {
+                    "type": "integer"
+                },
                 "video_game_id": {
                     "type": "number"
                 }

@@ -1,10 +1,10 @@
 definitions:
   helper.ErrResponse:
     properties:
-      code:
-        type: integer
       message:
         type: string
+      statusCode:
+        type: integer
     type: object
   helper.Response:
     properties:
@@ -43,6 +43,8 @@ definitions:
     type: object
   model.ReqBodyVideoGameRent:
     properties:
+      duration_month:
+        type: integer
       video_game_id:
         type: number
     required:
@@ -71,6 +73,10 @@ paths:
         in: header
         name: Authorization
         required: true
+        type: string
+      - description: Filter by status (in-progress or done)
+        in: query
+        name: status
         type: string
       produces:
       - application/json

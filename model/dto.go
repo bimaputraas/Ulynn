@@ -21,6 +21,7 @@ type ReqBodyUserTopUp struct {
 
 type ReqBodyVideoGameRent struct {
 	VideoGamesID    float64 `json:"video_game_id" validate:"required"`
+	Duration 		int		`json:"duration_month"`
 }
 
 type ResBodyHistoryVideoGame struct {
@@ -28,5 +29,6 @@ type ResBodyHistoryVideoGame struct {
 	StartDate time.Time `json:"start_date"`
 	DueDate time.Time `json:"due_date"`
 	Status string `json:"status"`
+	TotalRentalCost float64 `json:"total_rental_cost"`
 }
 

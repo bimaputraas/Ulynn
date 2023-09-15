@@ -9,7 +9,7 @@ type Response struct {
 
 type ErrResponse struct {
 	Message string
-	Code    int
+	StatusCode    int
 }
 
 func WriteResponse(c echo.Context,code int,msg string){
@@ -29,7 +29,7 @@ func WriteResponseWithData(c echo.Context,code int,msg string,data interface{}){
 func ErrorResponse(code int,msg string) *echo.HTTPError{
 	err := echo.NewHTTPError(code,ErrResponse{
 		Message: msg,
-		Code: code,
+		StatusCode: code,
 	})
 
 	return err

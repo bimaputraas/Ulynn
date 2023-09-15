@@ -9,5 +9,6 @@ type Histories struct {
 	VideoGame 		VideoGames  `json:"video_game" gorm:"foreignKey:VideoGameID"`
 	StartDate		time.Time 	`json:"start_date"`
 	DueDate			time.Time 	`json:"due_date"`
+	TotalRentalCost float64		`json:"totan_rental_cost"`
 	Status 			string      `json:"status"`
 }

@@ -38,7 +38,7 @@ func (h Histories) AddRent(c echo.Context) error {
 	user := c.Get("user").(*model.Users)
 
 	// update user,video_game, and create a new history
-	resBody, err := h.Repository.UpdateCreate(int(reqBody.VideoGamesID), *user)
+	resBody, err := h.Repository.UpdateCreate(int(reqBody.VideoGamesID),reqBody.Duration, *user)
 	if err != nil {
 		return helper.ErrorResponse(400, err.Error())
 	}
@@ -87,6 +87,7 @@ func (h Histories) UpdateRent(c echo.Context) error {
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "Authorization header with token"
+// @Param status query string false "Filter by status (in-progress or done)"
 // @Success 200 {array} helper.Response
 // @Failure 400 {object} helper.ErrResponse
 // @Failure 401 {object} helper.ErrResponse

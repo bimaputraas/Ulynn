@@ -7,17 +7,19 @@ import (
 )
 
 // create histories
-func (r Histories) UpdateCreate(videoGameId int,user model.Users) (*model.ResBodyHistoryVideoGame,error){
+func (r Histories) UpdateCreate(videoGameId int,durationMonth int,user model.Users) (*model.ResBodyHistoryVideoGame,error){
 	tx := r.DB.Begin()
 
-	// check video game availability
+	// get video game
 	var videoGame model.VideoGames
 	result := tx.First(&videoGame,videoGameId)
 	if result.Error != nil{
 		return nil,result.Error
 	}
+
+	// check video game availability
 	if !videoGame.Availability{
-		return nil,errors.New("video game is not ready")
+		return nil,errors.New("video game is not ready to rent")
 	}
 
 	// update video game avalability
@@ -28,14 +30,21 @@ func (r Histories) UpdateCreate(videoGameId int,user model.Users) (*model.ResBod
 		return nil,result.Error
 	}
 
+	// get total rental cost
+	// set default duration month to 1
+	if durationMonth < 1 {
+		durationMonth = 1
+	}
+	totalrentalcost := videoGame.RentalCost*float64(durationMonth)
+
 	// check user deposit amount
-	if user.DepositAmount < videoGame.RentalCost{
+	if user.DepositAmount < totalrentalcost{
 		tx.Rollback()
 		return nil,errors.New("insufficient funds")
 	}
 
 	// update user deposit amount
-	user.DepositAmount -= videoGame.RentalCost
+	user.DepositAmount -= totalrentalcost
 	result = tx.Save(&user)
 	if result.Error != nil{
 		tx.Rollback()
@@ -47,8 +56,9 @@ func (r Histories) UpdateCreate(videoGameId int,user model.Users) (*model.ResBod
 		UserID: user.ID,
 		VideoGameID: videoGame.ID,
 		StartDate: time.Now(),
-		DueDate: time.Now().AddDate(0,1,0),
+		DueDate: time.Now().AddDate(0,durationMonth,0),
 		Status: "In-Progress",
+		TotalRentalCost: totalrentalcost,
 	}
 	result = tx.Create(&history)
 	if result.Error != nil{
@@ -61,7 +71,7 @@ func (r Histories) UpdateCreate(videoGameId int,user model.Users) (*model.ResBod
 
 	// resBody
 	var output model.ResBodyHistoryVideoGame
-	result = r.DB.Raw(`SELECT video_games.title,histories.start_date,histories.due_date,histories.status
+	result = r.DB.Raw(`SELECT video_games.title,histories.start_date,histories.due_date,histories.status,histories.total_rental_cost
 	FROM histories
 	JOIN video_games ON histories.video_game_id = video_games.id
 	WHERE histories.id = ? AND histories.user_id = ?;`,history.ID,history.UserID).Scan(&output)
@@ -82,7 +92,7 @@ func (r Histories) Update(historyId,userId int) (*model.Histories,error){
 		return nil,result.Error
 	}
 
-	if history.Status == "done" || history.Status == "DONE" || history.Status == "Done"{
+	if history.Status == "Done" || history.Status == "done" || history.Status == "DONE" {
 		return nil, errors.New("failed update, video game is already available")
 	}
 
